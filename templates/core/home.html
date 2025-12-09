@@ -1,0 +1,729 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Saint Jean - Kherbet Qanafar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="{%static 'images/logo.jpg'%}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #3b82f6;
+        }
+        .map-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 10;
+            padding: 2rem;
+            text-align: center;
+        }
+        .map-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50" style="overflow-x: hidden;">
+    <!-- Base Template - Navigation -->
+ 
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center py-4">
+
+      <!-- Logo -->
+      <div class="flex items-center">
+        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
+          <img src="{%static 'images/logo.jpg'%}" alt="College Saint Jean Logo" class="w-10 h-10 rounded-full">
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-800">College Saint Jean</h1>
+          <p class="text-xs text-gray-600">Kherbet Qanafar</p>
+        </div>
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex space-x-8">
+        {% if user.is_authenticated %}
+        
+        {% if user.is_superuser%}
+        <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Add User</span>
+        {% endif %}
+        {% endif %}
+        <a href="{% url 'home' %}" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">Home</a>
+        <a href="{% url 'home' %}#about_section" class="text-gray-600 hover:text-blue-600 transition">About</a>
+        <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition">Success Stories</a>
+        <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition">Latest News</a>
+        <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition">Location & Contact</a>
+        
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <div class="flex items-center space-x-4">
+        <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Portal</a>
+        <button id="hamburger" class="md:hidden text-gray-600 focus:outline-none">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'account_logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'account_login' %}">Login</a>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden flex-col md:hidden space-y-2 pb-4">
+       <a href="{% url 'home' %}" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 block">Home</a>
+        <a href="{% url 'home' %}#about_section" class="text-gray-600 hover:text-blue-600 transition block">About</a>
+        <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition block">Success Stories</a>
+        <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition block">Latest News</a>
+        <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition block">Location & Contact</a>
+    </div>
+
+  </div>
+</nav>
+
+
+
+    <!-- Hero Section -->
+    <section class="relative text-white py-20 bg-cover bg-center bg-no-repeat"
+         style="background-image: url('{% static "images/bannerImage.jpg" %}');">
+  <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+  <div class="relative container mx-auto px-4">
+      <div class="max-w-2xl">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6">Excellence in Education Since 1985</h1>
+          <p class="text-xl mb-8 opacity-90">
+              College Saint Jean provides a transformative educational experience that prepares students for success in university and beyond.
+          </p>
+          <div class="flex space-x-4">
+              <a href="#" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition">Apply Now</a>
+              <a href="#" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-blue-600 transition">Learn More</a>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+
+    <!-- Quick Stats -->
+    <!-- Professional Stats Section -->
+<section class="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Excellence in Numbers</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Our commitment to quality education is reflected in these remarkable achievements and statistics.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Stat 1 -->
+            <div class="group relative bg-white rounded-2xl shadow-lg p-8 text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-user-graduate text-white text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-4xl font-bold text-gray-800 mb-2">
+                        <span class="counter" data-target="500">0</span>+
+                    </div>
+                    <div class="text-gray-600 font-medium">Students Enrolled</div>
+                    <p class="text-sm text-gray-500 mt-3">Dedicated learners shaping their future</p>
+                </div>
+                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-b-2xl"></div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="group relative bg-white rounded-2xl shadow-lg p-8 text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-chalkboard-teacher text-white text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-4xl font-bold text-gray-800 mb-2">
+                        <span class="counter" data-target="45">0</span>+
+                    </div>
+                    <div class="text-gray-600 font-medium">Qualified Teachers</div>
+                    <p class="text-sm text-gray-500 mt-3">Expert educators guiding our students</p>
+                </div>
+                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-b-2xl"></div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="group relative bg-white rounded-2xl shadow-lg p-8 text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-trophy text-white text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-4xl font-bold text-gray-800 mb-2">
+                        <span class="counter" data-target="98">0</span>%
+                    </div>
+                    <div class="text-gray-600 font-medium">Graduation Rate</div>
+                    <p class="text-sm text-gray-500 mt-3">Consistent academic success</p>
+                </div>
+                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-purple-600 rounded-b-2xl"></div>
+            </div>
+
+            <!-- Stat 4 -->
+            <div class="group relative bg-white rounded-2xl shadow-lg p-8 text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-award text-white text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-4xl font-bold text-gray-800 mb-2">
+                        <span class="counter" data-target="35">0</span>+
+                    </div>
+                    <div class="text-gray-600 font-medium">Years of Excellence</div>
+                    <p class="text-sm text-gray-500 mt-3">Trusted educational legacy</p>
+                </div>
+                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-orange-600 rounded-b-2xl"></div>
+            </div>
+        </div>
+
+        <!-- Additional mini stats -->
+        <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div class="text-center">
+                <div class="text-lg font-semibold text-blue-600">15:1</div>
+                <div class="text-sm text-gray-600">Student-Teacher Ratio</div>
+            </div>
+            <div class="text-center">
+                <div class="text-lg font-semibold text-green-600">25+</div>
+                <div class="text-sm text-gray-600">Extracurricular Activities</div>
+            </div>
+            <div class="text-center">
+                <div class="text-lg font-semibold text-purple-600">85%</div>
+                <div class="text-sm text-gray-600">University Scholarships</div>
+            </div>
+            <div class="text-center">
+                <div class="text-lg font-semibold text-orange-600">12</div>
+                <div class="text-sm text-gray-600">Modern Laboratories</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- about section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Column - Image -->
+            <div class="relative">
+                <div class="rounded-xl overflow-hidden shadow-lg" id="about_section">
+                    <div class="h-96 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center  bg-cover bg-center"  style="background-image: url('{% static "images/sourit l madrase.jpg" %}');" >
+                        <div class="text-center p-8">
+                            <i class="fas fa-school text-6xl text-blue-600 mb-6"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Our Campus</h3>
+                            <p class="text-gray-600 mt-2">Modern facilities in Kherbet Qanafar</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                    <span class="text-white font-bold text-lg">Since 1985</span>
+                </div>
+            </div>
+
+            <!-- Right Column - Content -->
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 section-title">About College Saint Jean</h2>
+                <p class="text-gray-600 mb-6">
+                    For over three decades, College Saint Jean has been a beacon of educational excellence in Kherbet Qanafar, 
+                    nurturing young minds and shaping future leaders through a holistic approach to education.
+                </p>
+                
+                <div class="space-y-4 mb-8">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                            <i class="fas fa-graduation-cap text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-1">Our Mission</h3>
+                            <p class="text-gray-600">
+                                To provide a transformative educational experience that empowers students with knowledge, 
+                                character, and skills to succeed in an ever-changing world.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-green-100 p-2 rounded-lg mr-4">
+                            <i class="fas fa-eye text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-1">Our Vision</h3>
+                            <p class="text-gray-600">
+                                To be the leading educational institution in the region, recognized for academic excellence 
+                                and the development of well-rounded, socially responsible individuals.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-purple-100 p-2 rounded-lg mr-4">
+                            <i class="fas fa-heart text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-1">Our Values</h3>
+                            <p class="text-gray-600">
+                                Integrity, excellence, respect, and community engagement form the foundation of everything we do.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats in about section -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-2xl font-bold text-blue-600 mb-1">35+</div>
+                        <div class="text-sm text-gray-600">Years of Excellence</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-2xl font-bold text-blue-600 mb-1">98%</div>
+                        <div class="text-sm text-gray-600">University Acceptance</div>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                        Learn More About Us
+                    </a>
+                    <a href="#" class="border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition">
+                        Meet Our Staff
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Features Section -->
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center p-6 bg-gray-50 rounded-xl">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-flask text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3">Modern Laboratories</h3>
+                <p class="text-gray-600">
+                    State-of-the-art science and computer labs to foster hands-on learning and innovation.
+                </p>
+            </div>
+            
+            <div class="text-center p-6 bg-gray-50 rounded-xl">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-book text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3">Comprehensive Library</h3>
+                <p class="text-gray-600">
+                    Extensive collection of resources to support academic research and reading development.
+                </p>
+            </div>
+            
+            <div class="text-center p-6 bg-gray-50 rounded-xl">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-futbol text-purple-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3">Sports Facilities</h3>
+                <p class="text-gray-600">
+                    Excellent sports infrastructure promoting physical health and teamwork among students.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Success Stories Section -->
+<section class="relative py-20 bg-gradient-to-b from-gray-100 to-gray-50">
+    <!-- Decorative background circles -->
+    <div class="absolute -top-10 -left-10 w-40 h-40 bg-blue-200 rounded-full opacity-20"></div>
+    <div class="absolute -bottom-10 -right-10 w-60 h-60 bg-purple-200 rounded-full opacity-20"></div>
+
+    <div class="relative container mx-auto px-4">
+        <!-- Title -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4" id="Success_Stories">Success Stories</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                Our alumni have gone on to achieve remarkable success in various fields around the world. Their journeys inspire our current students to dream big and aim higher.
+            </p>
+        </div>
+
+        <!-- Stories Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            
+            <!-- Story Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-blue-400 to-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mr-5 shadow-lg">
+                            MJ
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-800">Marie Joseph</h3>
+                            <p class="text-gray-500 text-sm">Class of 2010</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        "College Saint Jean provided me with the foundation to pursue my medical degree. The dedicated teachers and rigorous curriculum prepared me for success at university."
+                    </p>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Medical Doctor, Beirut</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-green-400 to-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mr-5 shadow-lg">
+                            AK
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-800">Ali Khoury</h3>
+                            <p class="text-gray-500 text-sm">Class of 2015</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        "The computer science program at College Saint Jean sparked my interest in technology. Today, I work as a software engineer at a leading tech company."
+                    </p>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Software Engineer, Dubai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-purple-400 to-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mr-5 shadow-lg">
+                            SJ
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-800">Sarah Jabbour</h3>
+                            <p class="text-gray-500 text-sm">Class of 2018</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        "The supportive environment and extracurricular activities at College Saint Jean helped me develop leadership skills that I use in my current role as a project manager."
+                    </p>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Project Manager, Paris</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- View More Button -->
+        <div class="text-center mt-16">
+            <a href="#" class="inline-block bg-blue-600 text-white font-semibold px-8 py-3 rounded-full hover:bg-blue-700 transition shadow-lg">
+                View More Success Stories <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+    <!-- News Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 section-title" id="Latest_News">Latest News</h2>
+            <p class="text-gray-600 mb-12 max-w-2xl">Stay updated with the latest events and announcements from College Saint Jean.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- News 1 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md">
+                    <div class="h-48 bg-blue-200 relative">
+                        <div class="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Event
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-sm text-gray-500 mb-2">June 15, 2023</div>
+                        <h3 class="font-bold text-xl mb-3">Annual Science Fair 2023</h3>
+                        <p class="text-gray-700 mb-4">Our students showcased innovative projects at the annual science fair, demonstrating creativity and scientific thinking.</p>
+                        <a href="#" class="text-blue-600 font-medium hover:text-blue-800 transition">Read More <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News 2 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md">
+                    <div class="h-48 bg-green-200 relative">
+                        <div class="absolute top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Achievement
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-sm text-gray-500 mb-2">May 28, 2023</div>
+                        <h3 class="font-bold text-xl mb-3">Basketball Team Wins Regional Championship</h3>
+                        <p class="text-gray-700 mb-4">Our basketball team secured first place in the regional championship, showcasing exceptional teamwork and sportsmanship.</p>
+                        <a href="#" class="text-blue-600 font-medium hover:text-blue-800 transition">Read More <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News 3 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md">
+                    <div class="h-48 bg-purple-200 relative">
+                        <div class="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Announcement
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-sm text-gray-500 mb-2">April 10, 2023</div>
+                        <h3 class="font-bold text-xl mb-3">New Library and Learning Center Opening</h3>
+                        <p class="text-gray-700 mb-4">We're excited to announce the opening of our new state-of-the-art library and learning center this fall semester.</p>
+                        <a href="#" class="text-blue-600 font-medium hover:text-blue-800 transition">Read More <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">View All News</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location & Contact Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 section-title">Location & Contact</h2>
+            <p class="text-gray-600 mb-12 max-w-2xl">Visit our campus or get in touch with us for more information.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Map -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d760.790905533462!2d35.718405282542115!3d33.641741936470694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e0!4m0!4m3!3m2!1d33.641869665418355!2d35.71807942416574!5e1!3m2!1sen!2slb!4v1761842467652!5m2!1sen!2slb" 
+                            class="map-iframe"
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        {% comment %} <div class="map-overlay">
+                            <i class="fas fa-map-marked-alt text-4xl text-white mb-4"></i>
+                            <h3 class="font-bold text-xl mb-2">College Saint Jean</h3>
+                            <p class="text-white">Kherbet Qanafar, Lebanon</p>
+                        </div> {% endcomment %}
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-start mb-4">
+                            <i class="fas fa-map-marker-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium">Address</h4>
+                                <p class="text-gray-600">College Saint Jean, Main Street, Kherbet Qanafar, Lebanon</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start mb-4">
+                            <i class="fas fa-phone text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium">Phone</h4>
+                                <p class="text-gray-600">+961 8 645 321</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium">Email</h4>
+                                <p class="text-gray-600">info@collegesaintjean.edu.lb</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="bg-white rounded-xl shadow-md p-8" id="Location_contact_section">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h3>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 mb-2" for="first-name">First Name</label>
+                                <input type="text" id="first-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2" for="last-name">Last Name</label>
+                                <input type="text" id="last-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2" for="email">Email Address</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2" for="subject">Subject</label>
+                            <input type="text" id="subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2" for="message">Message</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3">
+                            CSJ
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-lg">College Saint Jean</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">Providing quality education in Kherbet Qanafar since 1985.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Academics</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Admissions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Programs</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Elementary School</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Middle School</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">High School</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Extracurricular</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+                            <span>College Saint Jean, Kherbet Qanafar, Lebanon</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone mt-1 mr-3"></i>
+                            <span>+961 8 645 321</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3"></i>
+                            <span>info@collegesaintjean.edu.lb</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 College Saint Jean. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+
+  
+// Counter animation script
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.counter');
+    const speed = 200;
+
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const increment = target / speed;
+
+            if (count < target) {
+                counter.innerText = Math.ceil(count + increment);
+                setTimeout(updateCount, 1);
+            } else {
+                counter.innerText = target;
+            }
+        };
+
+        // Start counting when element is in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateCount();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        observer.observe(counter);
+    });
+});
+
+</script>
+
+</body>
+</html>
