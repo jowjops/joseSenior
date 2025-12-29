@@ -62,6 +62,48 @@
             border: none;
             z-index: 5;
         }
+
+        .dropbtn {
+  background-color: #606060ff;
+  color: white;
+  padding: 10px;
+  font-size: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3e738eff;
+}
     </style>
 </head>
 <body class="bg-gray-50" style="overflow-x: hidden;">
@@ -88,9 +130,20 @@
         {% if user.is_authenticated %}
         
         {% if user.is_superuser%}
-        <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown Menu</button>
+            <div class="dropdown-content">
+                 <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
             <i class="fas fa-tachometer-alt"></i>
-            <span>Add User</span>
+            <span>Add User</span></a>
+                
+             <a href="{% url 'class_list' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Classes Managment</span></a>
+            </div>
+        </div>
+       
         {% endif %}
         {% endif %}
         <a href="{% url 'home' %}" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">Home</a>

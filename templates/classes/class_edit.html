@@ -499,6 +499,47 @@
                 justify-content: center;
             }
         }
+
+
+.class-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.class-title {
+  font-size: 1.5em;
+  margin-bottom: 12px;
+  color: #333;
+}
+.student-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.student-item {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+}
+.student-item:last-child {
+  border-bottom: none;
+}
+.student-id {
+  font-weight: bold;
+  color: #007bff;
+}
+.student-name {
+  color: #555;
+}
+.no-students {
+  padding: 8px;
+  color: #999;
+  font-style: italic;
+}
     </style>
 </head>
 <body>
@@ -509,9 +550,9 @@
                 <div class="logo">Edu<span>Manage</span></div>
             </div>
             <div class="user-info">
-                <div class="user-avatar">AJ</div>
+                <div class="user-avatar">{{user.username|truncatechars:3}}</div>
                 <div class="user-details">
-                    <h3>Admin Johnson</h3>
+                    <h3>Admin</h3>
                     <div class="admin-badge">Administrator</div>
                 </div>
             </div>
@@ -533,11 +574,12 @@
                     <h2>Edit Class Information</h2>
                 </div>
 
-                <form id="editClassForm">
+                <form id="classEditForm" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="form-row">
                         <div class="form-group">
                             <label for="className" class="required">Class Name</label>
-                            <input type="text" id="className" class="form-control" value="{{class.name}}" required>
+                            <input name="class_name" type="text" id="className" class="form-control" value="{{class.name}}" required>
                             <div class="form-help">Enter a descriptive name for the class</div>
                         </div>
 
@@ -551,40 +593,45 @@
                             <input type="number" id="currentStudents" class="form-control" value="{{students_count}}" min="0" max="40" readonly>
                             <div class="form-help">Automatically calculated from enrollment</div>
                         </div>
+                        
                     </div>
+                    {% comment %} <h2>{{ class.name }}</h2> <ul> {% for student in class.students.all %} <li>{{ student.student_id }} — {{ student }}</li> {% empty %} <li>No students enrolled in this class.</li> {% endfor %} </ul> {% endcomment %}
+                     <div class="class-card">
+  <h2 class="class-title">{{ class.name }}</h2>
+  <ul class="student-list">
+    {% for student in class.students.all %}
+    <a href="{% url 'admin:users_studentprofile_change' student.id %}">
+      <li class="student-item">
+        <span class="student-id">{{ student.student_id }}</span>
+        <span class="student-name">{{ student }}</span>
+      </li>
+    </a>
+    {% empty %}
+      <li class="no-students">No students enrolled in this class.</li>
+    {% endfor %}
+  </ul>
+</div>
 
+
+
+<br><hr><br>
                     <div class="form-group">
                         <label for="classSchedule">Class Schedule</label>
                         <div class="container">
-                            <img src="" alt="">
+                            {% if class.schedule_image %}<img src="{{class.schedule_image.url}}" alt="" style="max-width: 100%; height: auto;">{% endif %}
                         </div>
+                        <input name="schedule_image" type="file" id="classSchedule" class="form-control" accept="image/*">
+                        <div class="form-help">{% if class.schedule_image %}Change {% else %}Upload{% endif %}  the class schedule</div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Class Status</label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="statusActive" name="classStatus" value="active" checked>
-                                <label for="statusActive">Active</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="statusInactive" name="classStatus" value="inactive">
-                                <label for="statusInactive">Inactive</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="statusArchived" name="classStatus" value="archived">
-                                <label for="statusArchived">Archived</label>
-                            </div>
-                        </div>
-                    </div>
+            <br><hr><br>
 
                     <div class="form-group">
                         <label for="classDescription">Class Description</label>
-                        <textarea id="classDescription" class="form-control" rows="4">{{class.description}}</textarea>
+                        <textarea name="class_description" id="classDescription" class="form-control" rows="4">{{class.description}}</textarea>
                     </div>
-                </form>
 
-                <!-- Action Buttons -->
+                     <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button type="button" class="btn btn-delete" id="deleteBtn">
                         <i class="fas fa-trash-alt"></i> Delete Class
@@ -596,6 +643,10 @@
                         <i class="fas fa-save"></i> Save Changes
                     </button>
                 </div>
+
+                </form>
+
+               
             </div>
 
             <!-- Preview Section -->
@@ -606,29 +657,18 @@
                 </div>
                 
                 <div class="preview-card" id="classPreview">
-                    <div class="preview-title" id="previewName">Mathematics</div>
-                    <div class="preview-grade" id="previewGrade">Grade 1</div>
+                    <div class="preview-grade" id="previewGrade">{{class.name}}</div>
                     
                     <div class="preview-info">
-                        <div class="preview-item">
-                            <i class="fas fa-user-tie"></i>
-                            <span id="previewTeacher">Mr. David Wilson</span>
-                        </div>
+    
                         <div class="preview-item">
                             <i class="fas fa-user-graduate"></i>
-                            <span id="previewStudents">28 / 30 students</span>
+                            <span id="previewStudents">{{students_count}} students</span>
                         </div>
-                        <div class="preview-item">
-                            <i class="fas fa-book"></i>
-                            <span id="previewSubject">Mathematics</span>
-                        </div>
-                        <div class="preview-item">
-                            <i class="fas fa-door-open"></i>
-                            <span id="previewRoom">Room 101</span>
-                        </div>
+                
                         <div class="preview-item">
                             <i class="fas fa-calendar-alt"></i>
-                            <span id="previewSchedule">Mon, Wed, Fri - 9:00 AM</span>
+                            <span id="previewSchedule">Mon, Fri - 8:00 AM -> 2:30 AM</span>
                         </div>
                     </div>
                     
@@ -637,7 +677,6 @@
                             <div class="status-dot"></div>
                             <div class="status-text" id="previewStatus">Active</div>
                         </div>
-                        <div id="previewCapacity">93% Capacity</div>
                     </div>
                 </div>
                 
@@ -677,227 +716,7 @@
     </div>
 
     <script>
-        // Get DOM elements
-        const form = document.getElementById('editClassForm');
-        const saveBtn = document.getElementById('saveBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const saveToast = document.getElementById('saveToast');
-        const deleteModal = document.getElementById('deleteModal');
-        const modalCancelBtn = document.getElementById('modalCancelBtn');
-        const modalDeleteBtn = document.getElementById('modalDeleteBtn');
-        const deleteClassName = document.getElementById('deleteClassName');
-
-        // Preview elements
-        const previewName = document.getElementById('previewName');
-        const previewGrade = document.getElementById('previewGrade');
-        const previewTeacher = document.getElementById('previewTeacher');
-        const previewStudents = document.getElementById('previewStudents');
-        const previewSubject = document.getElementById('previewSubject');
-        const previewRoom = document.getElementById('previewRoom');
-        const previewSchedule = document.getElementById('previewSchedule');
-        const previewStatus = document.getElementById('previewStatus');
-        const previewCapacity = document.getElementById('previewCapacity');
-
-        // Form elements
-        const className = document.getElementById('className');
-        const classGrade = document.getElementById('classGrade');
-        const classSubject = document.getElementById('classSubject');
-        const classTeacher = document.getElementById('classTeacher');
-        const classRoom = document.getElementById('classRoom');
-        const maxStudents = document.getElementById('maxStudents');
-        const currentStudents = document.getElementById('currentStudents');
-        const classSchedule = document.getElementById('classSchedule');
-        const classDescription = document.getElementById('classDescription');
-        const statusRadios = document.querySelectorAll('input[name="classStatus"]');
-
-        // Teacher options mapping
-        const teacherOptions = {
-            'teacher1': 'Mr. David Wilson',
-            'teacher2': 'Ms. Sarah Johnson',
-            'teacher3': 'Dr. Michael Chen',
-            'teacher4': 'Mrs. Emily Davis',
-            'teacher5': 'Mr. Robert Garcia',
-            'teacher6': 'Ms. Jennifer Lee'
-        };
-
-        // Subject options mapping
-        const subjectOptions = {
-            'math': 'Mathematics',
-            'english': 'English Language Arts',
-            'science': 'Science',
-            'social': 'Social Studies',
-            'art': 'Art & Creativity',
-            'pe': 'Physical Education',
-            'music': 'Music',
-            'technology': 'Technology'
-        };
-
-        // Initialize the preview
-        updatePreview();
-
-        // Update preview on form changes
-        form.addEventListener('input', updatePreview);
-        form.addEventListener('change', updatePreview);
-
-        // Save button click
-        saveBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Validate form
-            if (!form.checkValidity()) {
-                // Show validation messages
-                form.reportValidity();
-                return;
-            }
-            
-            // In a real application, you would send the data to a server here
-            // For demo purposes, we'll just show a success message
-            
-            // Show toast notification
-            saveToast.classList.add('show');
-            
-            // Hide toast after 3 seconds
-            setTimeout(() => {
-                saveToast.classList.remove('show');
-            }, 3000);
-            
-            console.log('Class updated with data:', {
-                name: className.value,
-                grade: classGrade.options[classGrade.selectedIndex].text,
-                subject: classSubject.options[classSubject.selectedIndex].text,
-                teacher: classTeacher.options[classTeacher.selectedIndex].text,
-                room: classRoom.value,
-                maxStudents: maxStudents.value,
-                currentStudents: currentStudents.value,
-                schedule: classSchedule.value,
-                status: document.querySelector('input[name="classStatus"]:checked').value,
-                description: classDescription.value
-            });
-        });
-
-        // Cancel button click
-        cancelBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
-                // In a real app, you would redirect back to the class listing
-                window.location.href = 'classes.html';
-            }
-        });
-
-        // Delete button click
-        deleteBtn.addEventListener('click', function() {
-            // Update modal with class name
-            deleteClassName.textContent = className.value;
-            
-            // Show modal
-            deleteModal.classList.add('active');
-        });
-
-        // Modal cancel button
-        modalCancelBtn.addEventListener('click', function() {
-            deleteModal.classList.remove('active');
-        });
-
-        // Modal delete button
-        modalDeleteBtn.addEventListener('click', function() {
-            // In a real application, you would send a delete request to the server here
-            alert(`Class "${className.value}" would be deleted in a real application.`);
-            
-            // Close modal
-            deleteModal.classList.remove('active');
-            
-            // Redirect to classes page after a short delay
-            setTimeout(() => {
-                window.location.href = 'classes.html';
-            }, 500);
-        });
-
-        // Close modal when clicking outside of it
-        deleteModal.addEventListener('click', function(e) {
-            if (e.target === deleteModal) {
-                deleteModal.classList.remove('active');
-            }
-        });
-
-        // Update preview function
-        function updatePreview() {
-            // Update basic info
-            previewName.textContent = className.value || 'Class Name';
-            
-            // Update grade
-            const gradeOption = classGrade.options[classGrade.selectedIndex];
-            previewGrade.textContent = gradeOption.text || 'Grade';
-            
-            // Update teacher
-            const teacherId = classTeacher.value;
-            previewTeacher.textContent = teacherOptions[teacherId] || 'No teacher assigned';
-            
-            // Update subject
-            const subjectId = classSubject.value;
-            previewSubject.textContent = subjectOptions[subjectId] || 'No subject';
-            
-            // Update room
-            previewRoom.textContent = classRoom.value || 'No room assigned';
-            
-            // Update student count and capacity
-            const max = parseInt(maxStudents.value) || 30;
-            const current = parseInt(currentStudents.value) || 0;
-            const percentage = max > 0 ? Math.round((current / max) * 100) : 0;
-            previewStudents.textContent = `${current} / ${max} students`;
-            previewCapacity.textContent = `${percentage}% Capacity`;
-            
-            // Update schedule (shortened version)
-            const scheduleText = classSchedule.value || 'Schedule not set';
-            // Extract first line or truncate
-            const firstLine = scheduleText.split('\n')[0];
-            previewSchedule.textContent = firstLine.length > 40 ? firstLine.substring(0, 40) + '...' : firstLine;
-            
-            // Update status
-            const activeRadio = document.querySelector('input[name="classStatus"]:checked');
-            previewStatus.textContent = activeRadio ? 
-                activeRadio.value.charAt(0).toUpperCase() + activeRadio.value.slice(1) : 
-                'Unknown';
-            
-            // Update status dot color
-            const statusDot = document.querySelector('.status-dot');
-            if (activeRadio) {
-                if (activeRadio.value === 'active') {
-                    statusDot.style.backgroundColor = 'var(--success-color)';
-                } else if (activeRadio.value === 'inactive') {
-                    statusDot.style.backgroundColor = 'var(--warning-color)';
-                } else {
-                    statusDot.style.backgroundColor = '#95a5a6';
-                }
-            }
-        }
-
-        // Auto-calculate percentage for student capacity
-        maxStudents.addEventListener('input', function() {
-            const max = parseInt(this.value) || 1;
-            const current = parseInt(currentStudents.value) || 0;
-            
-            // Ensure current students don't exceed max
-            if (current > max) {
-                currentStudents.value = max;
-            }
-            
-            updatePreview();
-        });
-
-        // Simulate loading class data (in a real app, this would come from an API)
-        function loadClassData() {
-            // This simulates loading data for class ID from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const classId = urlParams.get('id') || '1';
-            
-            console.log(`Loading data for class ID: ${classId}`);
-            
-            // In a real application, you would fetch the class data from a server here
-            // For demo, we're using the form's default values
-        }
-
-        // Initialize
-        loadClassData();
+        
     </script>
 </body>
 </html>

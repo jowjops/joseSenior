@@ -69,24 +69,10 @@ class UserType(models.Model):
 # StudentProfile
 # --------------------------
 class StudentProfile(BaseProfile):
-    # GRADE_LEVEL_CHOICES = [
-    #     ('kindergarten1', 'Kindergarten 1'),
-    #     ('kindergarten2', 'Kindergarten 2'),
-    #     ('kindergarten3', 'Kindergarten 3'),
-    #     ('grade_1', 'Grade 1'),
-    #     ('grade_2', 'Grade 2'),
-    #     ('grade_3', 'Grade 3'),
-    #     ('grade_4', 'Grade 4'),
-    #     ('grade_5', 'Grade 5'),
-    #     ('grade_6', 'Grade 6'),
-    #     ('grade_7', 'Grade 7'),
-    #     ('grade_8', 'Grade 8'),
-    #     ('grade_9', 'Grade 9'),
-    # ]
+
 
     student_id = models.CharField(max_length=20, verbose_name="Student ID",null=True,blank=True)
-    # class_level = models.CharField(max_length=20, choices=GRADE_LEVEL_CHOICES, verbose_name="Class Level")
-    class_level = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Class Level")
+    class_level = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Class Level",related_name="students")
     enrollment_date = models.DateField(default=timezone.now, verbose_name="Enrollment Date")
     expected_graduation_year = models.PositiveIntegerField(blank=True, null=True, verbose_name="Expected Graduation Year")
     

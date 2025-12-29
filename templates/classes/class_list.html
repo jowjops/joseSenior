@@ -420,9 +420,11 @@
         <!-- Page Title -->
         <div class="page-title">
             <h1><i class="fas fa-chalkboard-teacher"></i> Class Management</h1>
-            <button class="add-btn" id="addClassBtn">
-                <i class="fas fa-plus"></i> Add New Class
-            </button>
+            <a href="{% url 'admin:classes_class_add' %}">
+                <button class="add-btn" id="addClassBtn">
+                    <i class="fas fa-plus"></i> Add New Class
+                </button>
+            </a>
         </div>
 
         <!-- Stats Section -->
@@ -464,8 +466,6 @@
             </div>
             <div class="filter-container">
                 <button class="filter-btn active" data-filter="all">All Grades</button>
-                <button class="filter-btn" data-filter="grade1">Grade 1</button>
-                <button class="filter-btn" data-filter="grade2">Grade 2</button>
             </div>
         </div>
 
@@ -481,7 +481,13 @@
                         <div class="class-info">
                         
                         </div>
-                        <div class="class-actions">
+                        {% if classes.schedule_image %}
+                        <img src="{{classes.schedule_image.url}}" alt="Class Schedule" style="width:100%; border-radius:8px; margin-bottom:15px;">
+                        {% else %}
+                        <p>No schedule image available.</p>
+                        {% endif %}
+    
+                        <div class="class-actions " >
                             <a href="{%url 'class_edit' id=classes.id%}"><button class="action-btn edit-btn">
                                 <i class="fas fa-edit"></i> Edit
                             </button></a>
