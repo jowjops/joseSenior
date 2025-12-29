@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from users.models import TeacherProfile
 from users.models import StudentProfile
 from django.shortcuts import redirect
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
 
 @login_required
 
@@ -38,3 +40,16 @@ def class_edit(request, id):
         return redirect('class_edit', id=selected_class.id) 
 
     return render(request,'classes/class_edit.html',{'class':selected_class,'students_count':students_count})
+
+
+@require_POST
+def delete_class(request, class_id):
+   
+    class_to_delete = get_object_or_404(Class,id=class_id)
+
+    if not request.user.is_superuser:
+        return HttpResponse('Permission denied', status=403)
+    class_to_delete.delete()
+
+    return HttpResponse('deleted')
+
