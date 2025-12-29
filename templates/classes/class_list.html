@@ -494,10 +494,6 @@
                     {%endfor%}
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>EduManage School System &copy; 2023 | Admin Portal - Class Management Module</p>
-        </footer>
     </div>
 
     <script>
@@ -510,62 +506,7 @@
             setupEventListeners();
         });
 
-        // Render class cards
-        // function renderClasses(classList) {
-        //     const classGrid = document.getElementById('classGrid');
-        //     classGrid.innerHTML = '';
-
-        //     if (classList.length === 0) {
-        //         classGrid.innerHTML = `
-        //             <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: var(--border-radius);">
-        //                 <i class="fas fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
-        //                 <h3 style="color: #666;">No classes found</h3>
-        //                 <p>Try adjusting your search or filter criteria</p>
-        //             </div>
-        //         `;
-        //         return;
-        //     }
-
-        //     classList.forEach(cls => {
-        //         const classCard = document.createElement('div');
-        //         classCard.className = 'class-card';
-        //         classCard.innerHTML = `
-        //             <div class="class-header">
-        //                 <div class="class-title">${cls.name}</div>
-        //                 <div class="class-grade">${cls.grade}</div>
-        //             </div>
-        //             <div class="class-body">
-        //                 <div class="class-info">
-        //                     <div class="info-item">
-        //                         <i class="fas fa-user-tie"></i>
-        //                         <span><strong>Teacher:</strong> ${cls.teacher}</span>
-        //                     </div>
-        //                     <div class="info-item">
-        //                         <i class="fas fa-user-graduate"></i>
-        //                         <span><strong>Students:</strong> ${cls.students}</span>
-        //                     </div>
-        //                     <div class="info-item">
-        //                         <i class="fas fa-book"></i>
-        //                         <span><strong>Subject:</strong> ${cls.subject}</span>
-        //                     </div>
-        //                     <div class="info-item">
-        //                         <i class="fas fa-door-open"></i>
-        //                         <span><strong>Room:</strong> ${cls.room}</span>
-        //                     </div>
-        //                 </div>
-        //                 <div class="class-actions">
-        //                     <button class="action-btn edit-btn" data-id="${cls.id}">
-        //                         <i class="fas fa-edit"></i> Edit
-        //                     </button>
-        //                     <button class="action-btn delete-btn" data-id="${cls.id}">
-        //                         <i class="fas fa-trash-alt"></i> Delete
-        //                     </button>
-        //                 </div>
-        //             </div>
-        //         `;
-        //         classGrid.appendChild(classCard);
-        //     });
-        // }
+        
 
         // Update statistics
         function updateStats() {

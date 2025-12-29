@@ -147,8 +147,6 @@ class TeacherProfile(BaseProfile):
         ('music', 'Music'),
         ('pe', 'Physical Education'),
         ('computer', 'Computer Science'),
-        ('economics', 'Economics'),
-        ('philosophy', 'Philosophy'),
     ]
 
     DEPARTMENT_BLOCK_CHOICES = [
