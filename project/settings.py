@@ -10,7 +10,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    
+    "jazzmin",
     'core',
     'users',
     'allauth',

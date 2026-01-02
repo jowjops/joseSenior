@@ -80,7 +80,9 @@ class StudentProfile(BaseProfile):
     parent_email = models.EmailField(verbose_name="Parent/Guardian Email",null=True, blank=True)
     parent_phone = models.CharField(max_length=20, verbose_name="Parent/Guardian Phone",null=True, blank=True)
     parent_occupation = models.CharField(max_length=100, verbose_name="Parent Occupation",null=True, blank=True)
-    
+
+    absence_value = models.PositiveIntegerField(default=0, verbose_name="Total Absences",null=True, blank=True)
+
     medical_conditions = models.TextField(blank=True, verbose_name="Medical Conditions")
     allergies = models.TextField(blank=True, verbose_name="Allergies")
     medication = models.TextField(blank=True, verbose_name="Current Medications")
@@ -171,6 +173,10 @@ class TeacherProfile(BaseProfile):
     def subject_list(self):
         return [subject.strip() for subject in self.subjects_taught.split(',')] if self.subjects_taught else []
 
+    def save(self, *args, **kwargs):
+        if not self.employee_id:
+            self.employee_id = f"TCH{self.user.id:04d}"
+        super().save(*args, **kwargs)
 
 # --------------------------
 # Signals

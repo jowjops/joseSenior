@@ -53,12 +53,13 @@ def superuser_required(view_func):
     )(view_func)
     return decorated_view_func
 
+
 @superuser_required
 def user_management(request):
     # Get all users with related profiles - FIXED related_names
     users = User.objects.all().select_related('studentprofile_profile', 'teacherprofile_profile')
     
-    # Search functionality
+    
     search_query = request.GET.get('search', '')
     if search_query:
         users = users.filter(
@@ -125,3 +126,4 @@ def toggle_user_status(request, user_id):
     messages.success(request, f"User {user.username} has been {action}.")
     
     return redirect('user_management')
+

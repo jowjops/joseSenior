@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Student Absence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+    <!-- Header -->
+    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+      Manage Student Absence
+    </h1>
+
+    <!-- Student Info -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <p class="text-lg font-semibold text-gray-700">
+          {{ student.user.get_full_name|default:student.user.username }}
+        </p>
+        <p class="text-sm text-gray-500">ID: {{ student.display_id }}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-sm text-gray-500">Current Absence</p>
+        <p class="text-2xl font-bold text-blue-600">
+          {{ student.absence_value }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-center space-x-6">
+      <!-- Decrease Button -->
+      <form method="post" action="{% url 'decrease_absence' student.id %}">
+        {% csrf_token %}
+        <button type="submit"
+          class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-lg shadow transition-colors duration-200">
+          - Decrease
+        </button>
+      </form>
+
+      <!-- Increase Button -->
+      <form method="post" action="{% url 'increase_absence' student.id %}">
+        {% csrf_token %}
+        <button type="submit"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-lg shadow transition-colors duration-200">
+          + Increase
+        </button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
