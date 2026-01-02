@@ -14,7 +14,10 @@ def class_list(request):
     classes = Class.objects.all().order_by('name')
     teacher_count = TeacherProfile.objects.all().count()
     student_count = StudentProfile.objects.all().count()
-    
+    user = request.user
+
+    if hasattr(user, 'studentprofile_profile'):
+            return redirect('home')
     context = {
         'classes': classes,
         'count': classes.count(),
