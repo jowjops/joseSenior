@@ -177,9 +177,10 @@
         <button id="hamburger" class="md:hidden text-gray-600 focus:outline-none">
           <i class="fas fa-bars text-xl"></i>
         </button>
+        <a href="{% url 'announcement_list' %}"><i class="fa-regular fa-bell"></i></a>
 
         {% if user.is_authenticated %}
-        <a href="{% url 'account_logout' %}">Logout</a>
+        <a href="{% url 'account_logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
         {% else %}
         <a href="{% url 'account_login' %}">Login</a>
         {% endif %}

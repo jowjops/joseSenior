@@ -5,6 +5,7 @@ from django.shortcuts import render
 from users.decorators import teacher_or_admin_required
 from django.shortcuts import get_object_or_404, redirect
 from users.models import StudentProfile
+from .models import Announcement
 
 
 def home(request):
@@ -34,3 +35,8 @@ def decrease_absence(request, pk):
     if student.absence_value > 0: student.absence_value -= 1 
     student.save() 
     return redirect('students_by_class')
+
+
+def announcement_list(request):
+    announcements = Announcement.objects.order_by('-published_date')
+    return render(request, 'announcements.html', {'announcements': announcements})
