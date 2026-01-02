@@ -24,9 +24,12 @@ def class_list(request):
 
     return render(request, 'classes/class_list.html', context)
 
+@login_required
 def class_edit(request, id):
     selected_class = get_object_or_404(Class,id=id)
     students_count= StudentProfile.objects.filter(class_level=selected_class).count()
+    if not request.user.is_superuser:
+        return HttpResponse('Permission denied', status=403)
     if request.method == 'POST':
         class_name = request.POST.get('class_name')
         class_description = request.POST.get('class_description')
@@ -53,3 +56,7 @@ def delete_class(request, class_id):
 
     return HttpResponse('deleted')
 
+def class_readonly(request, id):
+    selected_class = get_object_or_404(Class,id=id)
+    students_count= StudentProfile.objects.filter(class_level=selected_class).count()
+    return render(request,'classes/class_readonly.html',{'class':selected_class,'students_count':students_count})
