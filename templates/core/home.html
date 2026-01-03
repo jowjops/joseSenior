@@ -186,7 +186,13 @@
 
       <!-- Mobile Hamburger -->
       <div class="flex items-center space-x-4">
-        {% comment %} <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Portal</a> {% endcomment %}
+        {% if user.studentprofile_profile %}
+<span class="text-gray-600 bg-gray-200 px-2 py-1 rounded">Student</span>
+{% elif user.teacherprofile_profile %}
+<span class="text-gray-600 bg-gray-200 px-2 py-1 rounded">Teacher</span>
+{% else %}
+<span class="text-gray-600 bg-gray-200 px-2 py-1 rounded text-red-600">Admin</span>
+{% endif %}
         <button id="hamburger" class="md:hidden text-gray-600 focus:outline-none">
           <i class="fas fa-bars text-xl"></i>
         </button>
@@ -687,6 +693,167 @@ document.addEventListener('DOMContentLoaded', function() {
 
         observer.observe(counter);
     });
+});
+
+/**
+ * WhatsApp message sender
+ */
+class WhatsAppSender {
+    constructor() {
+        this.schoolNumber = '+96181121347';
+        this.form = null;
+        this.init();
+    }
+    
+    init() {
+        this.form = document.querySelector('form');
+        if (this.form) {
+            this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
+    }
+    
+    handleSubmit(e) {
+        e.preventDefault();
+        
+        if (!this.validateForm()) {
+            return;
+        }
+        
+        this.sendMessage();
+    }
+    
+    validateForm() {
+        const requiredFields = [
+            { id: 'first-name', name: 'First Name' },
+            { id: 'last-name', name: 'Last Name' },
+            { id: 'email', name: 'Email' },
+            { id: 'message', name: 'Message' }
+        ];
+        
+        let isValid = true;
+        let errorMessages = [];
+        
+        // Check required fields
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            const value = element.value.trim();
+            
+            if (!value) {
+                isValid = false;
+                errorMessages.push(`${field.name} is required`);
+                this.highlightError(element);
+            } else {
+                this.removeHighlight(element);
+            }
+        });
+        
+        // Validate email format
+        const emailField = document.getElementById('email');
+        const email = emailField.value.trim();
+        if (email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                isValid = false;
+                errorMessages.push('Please enter a valid email address');
+                this.highlightError(emailField);
+            }
+        }
+        
+        // Show errors if any
+        if (!isValid) {
+            this.showError(errorMessages.join('\n'));
+        }
+        
+        return isValid;
+    }
+    
+    highlightError(element) {
+        element.classList.add('border-red-500');
+        element.classList.remove('border-gray-300');
+    }
+    
+    removeHighlight(element) {
+        element.classList.remove('border-red-500');
+        element.classList.add('border-gray-300');
+    }
+    
+    showError(message) {
+        // You can use a toast notification or modal here
+        alert(`Please fix the following errors:\n\n${message}`);
+    }
+    
+    sendMessage() {
+        // Get form values
+        const formData = {
+            firstName: document.getElementById('first-name').value.trim(),
+            lastName: document.getElementById('last-name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            subject: document.getElementById('subject').value.trim(),
+            message: document.getElementById('message').value.trim()
+        };
+        
+        // Create formatted message
+        const formattedMessage = this.formatMessage(formData);
+        const encodedMessage = encodeURIComponent(formattedMessage);
+        
+        // Create WhatsApp URL
+        const whatsappUrl = `https://wa.me/${this.schoolNumber}?text=${encodedMessage}`;
+        
+        // Show loading state
+        this.showLoading();
+        
+        // Open WhatsApp after a brief delay for better UX
+        setTimeout(() => {
+            window.open(whatsappUrl, '_blank');
+            this.showSuccess();
+            // Optional: Reset form
+            // this.form.reset();
+        }, 500);
+    }
+    
+    formatMessage(data) {
+        return `
+📧 *NEW CONTACT FORM SUBMISSION*
+
+👤 *Name:* ${data.firstName} ${data.lastName}
+📧 *Email:* ${data.email}
+📋 *Subject:* ${data.subject || 'No Subject'}
+💬 *Message:*
+${data.message}
+
+⏰ *Submitted:* ${new Date().toLocaleString()}
+🌐 *Source:* School Website Contact Form
+        `.trim();
+    }
+    
+    showLoading() {
+        const submitButton = this.form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">⟳</span> Preparing WhatsApp...';
+            submitButton.disabled = true;
+        }
+    }
+    
+    showSuccess() {
+        const submitButton = this.form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '✓ Message Prepared!';
+            submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            submitButton.classList.add('bg-green-600', 'hover:bg-green-700');
+            
+            // Reset button after 3 seconds
+            setTimeout(() => {
+                submitButton.innerHTML = 'Send Message';
+                submitButton.disabled = false;
+                submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                submitButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }, 3000);
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new WhatsAppSender();
 });
 
 </script>
