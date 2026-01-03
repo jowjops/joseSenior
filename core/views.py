@@ -6,7 +6,7 @@ from users.decorators import teacher_or_admin_required
 from django.shortcuts import get_object_or_404, redirect
 from users.models import StudentProfile
 from .models import Announcement
-
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     news = LatestNews.objects.all().order_by('-published_date')[:3]
@@ -16,6 +16,7 @@ def home(request):
 @teacher_or_admin_required
 def students_by_class(request):
     classes = Class.objects.prefetch_related('students').all()
+    
     return render(request, 'students/students_by_class.html', {
         'classes': classes
     })
@@ -38,5 +39,7 @@ def decrease_absence(request, pk):
 
 
 def announcement_list(request):
+    if not request.user.is_authenticated:
+        return redirect('account_login')
     announcements = Announcement.objects.order_by('-published_date')
     return render(request, 'announcements.html', {'announcements': announcements})

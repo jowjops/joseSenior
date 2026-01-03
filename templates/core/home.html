@@ -145,6 +145,10 @@
              <a href="{% url 'user_management' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
             <i class="fas fa-tachometer-alt"></i>
             <span>User Managment</span></a>
+
+             <a href="{% url 'students_by_class' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Manage Absence</span></a>
             </div>
         </div>
        
@@ -159,13 +163,22 @@
             <button class="dropbtn">Dropdown Menu</button>
             <div class="dropdown-content">
                 <a href="{% url 'students_by_class' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">Manage Absence</a>
+                <a href="{% url 'class_announcements_add' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">Add Announcement</a>
+            </div>
+        </div>
+        {% endif %}
+        {% if  user.studentprofile_profile%}
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown Menu</button>
+            <div class="dropdown-content">
+                <a href="{% url 'class_announcements_list' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">Class Announcement</a>
             </div>
         </div>
         {% endif %}
 
         <a href="{% url 'home' %}" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">Home</a>
         <a href="{% url 'home' %}#about_section" class="text-gray-600 hover:text-blue-600 transition">About</a>
-        <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition">Success Stories</a>
+        {% comment %} <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition">Success Stories</a> {% endcomment %}
         <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition">Latest News</a>
         <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition">Location & Contact</a>
         
@@ -173,7 +186,7 @@
 
       <!-- Mobile Hamburger -->
       <div class="flex items-center space-x-4">
-        <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Portal</a>
+        {% comment %} <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Portal</a> {% endcomment %}
         <button id="hamburger" class="md:hidden text-gray-600 focus:outline-none">
           <i class="fas fa-bars text-xl"></i>
         </button>
@@ -192,7 +205,7 @@
     <div id="mobile-menu" class="hidden flex-col md:hidden space-y-2 pb-4">
        <a href="{% url 'home' %}" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 block">Home</a>
         <a href="{% url 'home' %}#about_section" class="text-gray-600 hover:text-blue-600 transition block">About</a>
-        <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition block">Success Stories</a>
+        {% comment %} <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition block">Success Stories</a> {% endcomment %}
         <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition block">Latest News</a>
         <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition block">Location & Contact</a>
     </div>
@@ -600,7 +613,7 @@
                     </ul>
                 </div>
                 
-                <div>
+                {% comment %} <div>
                     <h3 class="font-bold text-lg mb-4">Programs</h3>
                     <ul class="space-y-2">
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Elementary School</a></li>
@@ -608,7 +621,7 @@
                         <li><a href="#" class="text-gray-400 hover:text-white transition">High School</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Extracurricular</a></li>
                     </ul>
-                </div>
+                </div> {% endcomment %}
                 
                 <div>
                     <h3 class="font-bold text-lg mb-4">Contact Info</h3>
@@ -630,7 +643,7 @@
             </div>
             
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2023 College Saint Jean. All rights reserved.</p>
+                <p>&copy; 2026 College Saint Jean. All rights reserved.</p>
             </div>
         </div>
     </footer>

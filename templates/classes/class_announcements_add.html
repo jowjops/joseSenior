@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<style>
+:root {
+    --primary-color: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary-color: #7209b7;
+    --success-color: #4cc9f0;
+    --danger-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --border-color: #e0e0e0;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fb;
+    color: #333;
+    line-height: 1.6;
+}
+
+.announcement-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.announcement-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: var(--light-color);
+    color: var(--primary-color);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-right: 20px;
+}
+
+.back-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.header-content {
+    flex: 1;
+}
+
+.header-content h1 {
+    color: var(--dark-color);
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.header-content p {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.announcement-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+.form-section {
+    margin-bottom: 30px;
+}
+
+.form-section h3 {
+    font-size: 18px;
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    display: inline-block;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark-color);
+    font-size: 15px;
+}
+
+.form-group label .required {
+    color: var(--danger-color);
+    margin-left: 3px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 2px solid #e1e5eb;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.form-control:hover {
+    border-color: #b8c2cc;
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 45px;
+}
+
+textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.subject-option {
+    position: relative;
+}
+
+.subject-option input[type="radio"] {
+    display: none;
+}
+
+.subject-option label {
+    display: block;
+    padding: 12px 15px;
+    background: var(--light-color);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.subject-option input[type="radio"]:checked + label {
+    background: rgba(67, 97, 238, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.subject-option label:hover {
+    background: rgba(67, 97, 238, 0.05);
+    transform: translateY(-2px);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.btn-reset {
+    background: transparent;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.btn-reset:hover {
+    background: #f8f9fa;
+    color: var(--dark-color);
+}
+
+.icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Toast Messages */
+.messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    animation: slideIn 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .announcement-container {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+    
+    .announcement-card {
+        padding: 25px;
+    }
+    
+    .subject-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .announcement-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .back-btn {
+        margin-bottom: 15px;
+        margin-right: 0;
+    }
+    
+    .subject-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+<div class="announcement-container">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Header -->
+    <div class="announcement-header">
+        <a href="" class="back-btn">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Announcements
+        </a>
+        <div class="header-content">
+            <h1>Create New Announcement</h1>
+            <p>Fill in the details below to create a new announcement for a class</p>
+        </div>
+    </div>
+
+    <!-- Announcement Form -->
+    <div class="announcement-card">
+        <form method="POST" id="announcementForm" action="{% url 'class_announcements_add' %}">
+            {% csrf_token %}
+            
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                
+                <div class="form-group">
+                    <label for="class_related">Select Class <span class="required">*</span></label>
+                    <select name="class_related" id="class_related" class="form-control" required>
+                        <option value="">Choose a class...</option>
+                        {% for class in classes %}
+                            <option value="{{ class.id }}" {% if form_data.class_related == class.id|stringformat:"i" %}selected{% endif %}>
+                                {{ class.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Announcement Title <span class="required">*</span></label>
+                    <input type="text" 
+                           name="title" 
+                           id="title" 
+                           class="form-control" 
+                           placeholder="e.g., Important Update for Next Week" 
+                           value="{{ form_data.title|default:'' }}"
+                           required
+                           maxlength="200">
+                    <small style="color: #6c757d; font-size: 13px; margin-top: 5px; display: block;">
+                        Maximum 200 characters
+                    </small>
+                </div>
+            </div>
+
+            <!-- Subject Selection Section -->
+            <div class="form-section">
+                <h3>Select Subject</h3>
+                <div class="subject-grid">
+                    {% for value, label in SUBJECTS_CHOICES %}
+                        <div class="subject-option">
+                            <input type="radio" 
+                                   name="subject" 
+                                   id="subject_{{ value }}" 
+                                   value="{{ value }}"
+                                   {% if form_data.subject == value %}checked{% endif %}
+                                   required>
+                            <label for="subject_{{ value }}">{{ label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="form-section">
+                <h3>Announcement Content</h3>
+                <div class="form-group">
+                    <label for="content">Message <span class="required">*</span></label>
+                    <textarea name="content" 
+                              id="content" 
+                              class="form-control" 
+                              placeholder="Write your announcement here... Include all important details, dates, and instructions."
+                              required>{{ form_data.content|default:'' }}</textarea>
+                    <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                        <small style="color: #6c757d; font-size: 13px;">
+                            Supports basic HTML formatting
+                        </small>
+                        <small id="charCount" style="color: #6c757d; font-size: 13px;">
+                            0 characters
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="reset" class="btn btn-reset">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12a9 9 0 11-2.636-6.364M21 3v6h-6"/>
+                    </svg>
+                    Reset
+                </button>
+                <a href="" class="btn btn-secondary">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Create Announcement
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Help Text -->
+    <div style="background: #f8f9fa; border-radius: var(--radius-sm); padding: 20px; margin-top: 20px;">
+        <h4 style="color: var(--primary-color); margin-bottom: 10px; font-size: 16px;">
+            <svg style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            Tips for effective announcements:
+        </h4>
+        <ul style="color: #6c757d; font-size: 14px; line-height: 1.6; padding-left: 20px;">
+            <li>Be clear and concise in your message</li>
+            <li>Include important dates and deadlines</li>
+            <li>Use proper formatting for readability</li>
+            <li>Double-check the selected class and subject</li>
+            <li>Announcements will be visible to all students in the selected class</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Character counter for content textarea
+    const contentTextarea = document.getElementById('content');
+    const charCount = document.getElementById('charCount');
+    
+    function updateCharCount() {
+        const length = contentTextarea.value.length;
+        charCount.textContent = `${length} characters`;
+        
+        if (length > 1000) {
+            charCount.style.color = '#f72585';
+        } else if (length > 500) {
+            charCount.style.color = '#ffb703';
+        } else {
+            charCount.style.color = '#6c757d';
+        }
+    }
+    
+    contentTextarea.addEventListener('input', updateCharCount);
+    updateCharCount(); // Initial count
+    
+    // Form submission handling
+    const form = document.getElementById('announcementForm');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    form.addEventListener('submit', function(e) {
+        // Basic validation
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.style.borderColor = '#f72585';
+                field.addEventListener('input', function() {
+                    this.style.borderColor = '#e1e5eb';
+                });
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fill in all required fields marked with *');
+            return;
+        }
+        
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
+        
+        // Auto-hide messages after 5 seconds
+        const messages = document.querySelectorAll('.alert');
+        messages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => message.remove(), 500);
+            }, 5000);
+        });
+    });
+    
+    // Auto-hide messages on click
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.alert')) {
+            e.target.closest('.alert').remove();
+        }
+    });
+    
+    // Reset button functionality
+    document.querySelector('.btn-reset').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to reset all fields? All entered data will be lost.')) {
+            form.reset();
+            updateCharCount();
+            
+            // Reset radio buttons
+            const radioButtons = form.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => radio.checked = false);
+        }
+    });
+    
+    // Subject selection feedback
+    const subjectOptions = document.querySelectorAll('.subject-option');
+    subjectOptions.forEach(option => {
+        const input = option.querySelector('input[type="radio"]');
+        const label = option.querySelector('label');
+        
+        input.addEventListener('change', function() {
+            subjectOptions.forEach(opt => {
+                opt.querySelector('label').style.fontWeight = '500';
+            });
+            if (this.checked) {
+                label.style.fontWeight = '600';
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

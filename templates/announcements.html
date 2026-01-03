@@ -30,7 +30,10 @@
             {{ announcement.content }}
           </p>
           <span class="inline-block text-sm font-medium px-3 py-1 rounded-full bg-gray-200 text-gray-700">
-            {{ announcement.announcment_for }}
+            To: {{ announcement.announcment_for }}
+          </span>
+          <span class="inline-block text-sm font-medium px-3 py-1 rounded-full bg-gray-200 text-red-700">
+            From: Admin
           </span>
         </div>
       {% elif announcement.announcment_for == 'Teachers' and user.teacherprofile_profile %}

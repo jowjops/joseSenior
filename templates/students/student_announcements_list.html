@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Class Announcements Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .user-info h3 {
+            color: #4361ee;
+            margin-bottom: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .announcements-count {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .count-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4361ee;
+            margin-bottom: 5px;
+        }
+        
+        .count-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .announcements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .announcement-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .announcement-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+        
+        .announcement-title {
+            color: #2d3748;
+            font-size: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f3f9;
+        }
+        
+        .announcement-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-class {
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+        }
+        
+        .badge-subject {
+            background: rgba(114, 9, 183, 0.1);
+            color: #7209b7;
+        }
+        
+        .badge-date {
+            background: rgba(76, 201, 240, 0.1);
+            color: #4cc9f0;
+        }
+        
+        .announcement-content {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .announcement-content p {
+            margin-bottom: 10px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .announcement-card {
+                padding: 20px;
+            }
+            
+            .announcement-title {
+                font-size: 18px;
+            }
+            
+            .announcement-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Class Announcements</h1>
+            <p>View all announcements for your class</p>
+        </div>
+        
+        {% if user.is_authenticated %}
+        <div class="user-info">
+            <h3>User Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Username</div>
+                    <div class="info-value">{{ user.username }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Is Superuser</div>
+                    <div class="info-value">{{ user.is_superuser|yesno:"Yes,No" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Has Student Profile</div>
+                    <div class="info-value">{{ has_student_profile|yesno:"Yes,No" }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="announcements-count">
+            <div class="count-number">{{ announcements|length }}</div>
+            <div class="count-label">
+                {% if has_student_profile %}
+                    Announcements for your class
+                {% else %}
+                    Total announcements
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="announcements-list">
+            {% if announcements %}
+                {% for announcement in announcements %}
+                <div class="announcement-card">
+                    <h2 class="announcement-title">{{ announcement.title }}</h2>
+                    
+                    <div class="announcement-meta">
+                        <div class="meta-item">
+                            <span class="badge badge-class">{{ announcement.class_related.name }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="badge badge-subject">{{ announcement.get_subject_display }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="badge badge-date">{{ announcement.published_date|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <svg style="width: 14px; height: 14px; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                            {{ announcement.published_date|date:"h:i A" }}
+                        </div>
+                        {% if announcement.updated_at != announcement.published_date %}
+                        <div class="meta-item">
+                            <svg style="width: 14px; height: 14px; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Updated {{ announcement.updated_at|date:"M d, Y" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="announcement-content">
+                        {{ announcement.content|linebreaks }}
+                    </div>
+                    
+                    <div style="font-size: 12px; color: #6c757d; margin-top: 10px;">
+                        Announcement ID: {{ announcement.id }} 
+                    </div>
+                    {% if user.teacherprofile_profile %}
+                    {% comment %} <form method="POST" 
+                        action="{% url 'delete_announcement_direct' announcement.pk %}" 
+                        style="display: inline;"
+                        onsubmit="return handleDelete(event, {{ announcement.pk }})">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                class="action-btn delete" 
+                                title="Delete"
+                                data-announcement-id="{{ announcement.id }}"
+                                data-announcement-title="{{ announcement.title }}">
+                            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </form> {% endcomment %}
+                    <form method="POST" 
+                        action="{% url 'delete_announcement_direct' announcement.pk %}" 
+                        style="display: inline;"
+                        onsubmit="return confirm('Are you sure you want to delete the announcement: {{ announcement.title }}?');">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                class="action-btn delete" 
+                                title="Delete"
+                                data-announcement-id="{{ announcement.id }}"
+                                data-announcement-title="{{ announcement.title }}">
+                            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg style="width: 64px; height: 64px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <h3>No Announcements Found</h3>
+                    <p>
+                        {% if has_student_profile %}
+                            There are no announcements for your class yet. Check back later or contact your teacher.
+                        {% else %}
+                            There are no announcements in the system yet.
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        
+    
+    </div>
+    
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to announcement cards
+            const cards = document.querySelectorAll('.announcement-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.announcement-title').textContent;
+                    console.log('Clicked announcement:', title);
+                });
+            });
+            
+            // Log debug info
+            console.log('Announcements Test Page Loaded');
+            console.log('User:', '{{ user }}');
+            console.log('Has Student Profile:', '{{ has_student_profile }}');
+            console.log('Announcement Count:', {{ announcements|length }});
+            
+            // Add visual feedback for new announcements (within last 24 hours)
+            const now = new Date();
+            cards.forEach(card => {
+                const dateText = card.querySelector('.badge-date')?.textContent;
+                if (dateText) {
+                    // Simple check for "Today" or recent date
+                    if (dateText.includes('Today') || dateText.includes(new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric'}))) {
+                        card.style.borderLeft = '4px solid #f72585';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
