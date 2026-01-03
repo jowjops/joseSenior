@@ -792,22 +792,19 @@ class WhatsAppSender {
             message: document.getElementById('message').value.trim()
         };
         
-        // Create formatted message
+        
         const formattedMessage = this.formatMessage(formData);
         const encodedMessage = encodeURIComponent(formattedMessage);
         
-        // Create WhatsApp URL
+       
         const whatsappUrl = `https://wa.me/${this.schoolNumber}?text=${encodedMessage}`;
         
-        // Show loading state
+        
         this.showLoading();
         
-        // Open WhatsApp after a brief delay for better UX
         setTimeout(() => {
             window.open(whatsappUrl, '_blank');
             this.showSuccess();
-            // Optional: Reset form
-            // this.form.reset();
         }, 500);
     }
     
