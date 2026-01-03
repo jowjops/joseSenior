@@ -108,7 +108,7 @@
 </head>
 <body class="bg-gray-50" style="overflow-x: hidden;">
     <!-- Base Template - Navigation -->
- 
+
 
     <nav class="bg-white shadow-md sticky top-0 z-50">
   <div class="container mx-auto px-4">
@@ -127,17 +127,19 @@
 
       <div class="hidden md:flex space-x-8">
         {% if user.is_authenticated %}
-        
+
         {% if user.is_superuser%}
 
 
         <div class="dropdown">
             <button class="dropbtn">Dropdown Menu</button>
             <div class="dropdown-content">
+
+
                  <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
             <i class="fas fa-tachometer-alt"></i>
-            <span>Add User</span></a>
-                
+            <span>Admin Pannel</span></a>
+
              <a href="{% url 'class_list' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
             <i class="fas fa-tachometer-alt"></i>
             <span>Classes Managment</span></a>
@@ -151,13 +153,13 @@
             <span>Manage Absence</span></a>
             </div>
         </div>
-       
-        {% endif %}
-        
 
         {% endif %}
 
-        
+
+        {% endif %}
+
+
         {% if  user.teacherprofile_profile%}
         <div class="dropdown">
             <button class="dropbtn">Dropdown Menu</button>
@@ -181,18 +183,20 @@
         {% comment %} <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition">Success Stories</a> {% endcomment %}
         <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition">Latest News</a>
         <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition">Location & Contact</a>
-        
+
       </div>
 
       <!-- Mobile Hamburger -->
       <div class="flex items-center space-x-4">
+        {% if user.is_authenticated %}
         {% if user.studentprofile_profile %}
-<span class="text-gray-600 bg-gray-200 px-2 py-1 rounded">Student</span>
-{% elif user.teacherprofile_profile %}
-<span class="text-gray-600 bg-gray-200 px-2 py-1 rounded">Teacher</span>
-{% else %}
-<span class="text-gray-600 bg-gray-200 px-2 py-1 rounded text-red-600">Admin</span>
-{% endif %}
+            <span class="text-gray-600 bg-gray-200 px-2 py-1 rounded">Student</span>
+            {% elif user.teacherprofile_profile %}
+            <span class="text-gray-600 bg-gray-200 px-2 py-1 rounded">Teacher</span>
+            {% elif user.is_superuser %}
+            <span class="text-gray-600 bg-gray-200 px-2 py-1 rounded text-red-600">Admin</span>
+        {% endif %}
+        {% endif %}
         <button id="hamburger" class="md:hidden text-gray-600 focus:outline-none">
           <i class="fas fa-bars text-xl"></i>
         </button>
@@ -214,6 +218,58 @@
         {% comment %} <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition block">Success Stories</a> {% endcomment %}
         <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition block">Latest News</a>
         <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition block">Location & Contact</a>
+        <br>
+        {% if user.is_authenticated %}
+
+        {% if user.is_superuser%}
+
+
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown Menu</button>
+            <div class="dropdown-content">
+
+
+                 <a href="{% url 'admin:index' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Admin Pannel</span></a>
+
+             <a href="{% url 'class_list' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Classes Managment</span></a>
+
+             <a href="{% url 'user_management' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>User Managment</span></a>
+
+             <a href="{% url 'students_by_class' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Manage Absence</span></a>
+            </div>
+        </div>
+
+        {% endif %}
+
+
+        {% endif %}
+
+
+        {% if  user.teacherprofile_profile%}
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown Menu</button>
+            <div class="dropdown-content">
+                <a href="{% url 'students_by_class' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">Manage Absence</a>
+                <a href="{% url 'class_announcements_add' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">Add Announcement</a>
+            </div>
+        </div>
+        {% endif %}
+        {% if  user.studentprofile_profile%}
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown Menu</button>
+            <div class="dropdown-content">
+                <a href="{% url 'class_announcements_list' %}" class="text-gray-600 hover:text-blue-600 font-medium flex items-center space-x-2">Class Announcement</a>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
   </div>
@@ -367,10 +423,10 @@
             <div>
                 <h2 class="text-3xl font-bold text-gray-800 section-title">About College Saint Jean</h2>
                 <p class="text-gray-600 mb-6">
-                    For over three decades, College Saint Jean has been a beacon of educational excellence in Kherbet Qanafar, 
+                    For over three decades, College Saint Jean has been a beacon of educational excellence in Kherbet Qanafar,
                     nurturing young minds and shaping future leaders through a holistic approach to education.
                 </p>
-                
+
                 <div class="space-y-4 mb-8">
                     <div class="flex items-start">
                         <div class="bg-blue-100 p-2 rounded-lg mr-4">
@@ -379,12 +435,12 @@
                         <div>
                             <h3 class="font-bold text-lg text-gray-800 mb-1">Our Mission</h3>
                             <p class="text-gray-600">
-                                To provide a transformative educational experience that empowers students with knowledge, 
+                                To provide a transformative educational experience that empowers students with knowledge,
                                 character, and skills to succeed in an ever-changing world.
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start">
                         <div class="bg-green-100 p-2 rounded-lg mr-4">
                             <i class="fas fa-eye text-green-600"></i>
@@ -392,12 +448,12 @@
                         <div>
                             <h3 class="font-bold text-lg text-gray-800 mb-1">Our Vision</h3>
                             <p class="text-gray-600">
-                                To be the leading educational institution in the region, recognized for academic excellence 
+                                To be the leading educational institution in the region, recognized for academic excellence
                                 and the development of well-rounded, socially responsible individuals.
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start">
                         <div class="bg-purple-100 p-2 rounded-lg mr-4">
                             <i class="fas fa-heart text-purple-600"></i>
@@ -445,7 +501,7 @@
                     State-of-the-art science and computer labs to foster hands-on learning and innovation.
                 </p>
             </div>
-            
+
             <div class="text-center p-6 bg-gray-50 rounded-xl">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-book text-green-600 text-2xl"></i>
@@ -455,7 +511,7 @@
                     Extensive collection of resources to support academic research and reading development.
                 </p>
             </div>
-            
+
             <div class="text-center p-6 bg-gray-50 rounded-xl">
                 <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-futbol text-purple-600 text-2xl"></i>
@@ -475,7 +531,7 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-800 section-title" id="Latest_News">Latest News</h2>
             <p class="text-gray-600 mb-12 max-w-2xl">Stay updated with the latest events and announcements from College Saint Jean.</p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- News 1 -->
                  {% for new in news %}
@@ -498,7 +554,7 @@
                 {% endfor %}
 
             </div>
-            
+
             {% comment %} <div class="text-center mt-12">
                 <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">View All News</a>
             </div> {% endcomment %}
@@ -510,16 +566,16 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-800 section-title">Location & Contact</h2>
             <p class="text-gray-600 mb-12 max-w-2xl">Visit our campus or get in touch with us for more information.</p>
-            
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <!-- Map -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="map-container">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d760.790905533462!2d35.718405282542115!3d33.641741936470694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e0!4m0!4m3!3m2!1d33.641869665418355!2d35.71807942416574!5e1!3m2!1sen!2slb!4v1761842467652!5m2!1sen!2slb" 
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d760.790905533462!2d35.718405282542115!3d33.641741936470694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e0!4m0!4m3!3m2!1d33.641869665418355!2d35.71807942416574!5e1!3m2!1sen!2slb!4v1761842467652!5m2!1sen!2slb"
                             class="map-iframe"
-                            allowfullscreen="" 
-                            loading="lazy" 
+                            allowfullscreen=""
+                            loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                         {% comment %} <div class="map-overlay">
@@ -552,7 +608,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Contact Form -->
                 <div class="bg-white rounded-xl shadow-md p-8" id="Location_contact_section">
                     <h3 class="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h3>
@@ -607,7 +663,7 @@
                         <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                
+
                 <div>
                     <h3 class="font-bold text-lg mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -618,7 +674,7 @@
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Contact</a></li>
                     </ul>
                 </div>
-                
+
                 {% comment %} <div>
                     <h3 class="font-bold text-lg mb-4">Programs</h3>
                     <ul class="space-y-2">
@@ -628,7 +684,7 @@
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Extracurricular</a></li>
                     </ul>
                 </div> {% endcomment %}
-                
+
                 <div>
                     <h3 class="font-bold text-lg mb-4">Contact Info</h3>
                     <ul class="space-y-2 text-gray-400">
@@ -647,7 +703,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; 2026 College Saint Jean. All rights reserved.</p>
             </div>
@@ -661,7 +717,7 @@
     mobileMenu.classList.toggle('hidden');
   });
 
-  
+
 // Counter animation script
 document.addEventListener('DOMContentLoaded', function() {
     const counters = document.querySelectorAll('.counter');
@@ -704,24 +760,24 @@ class WhatsAppSender {
         this.form = null;
         this.init();
     }
-    
+
     init() {
         this.form = document.querySelector('form');
         if (this.form) {
             this.form.addEventListener('submit', (e) => this.handleSubmit(e));
         }
     }
-    
+
     handleSubmit(e) {
         e.preventDefault();
-        
+
         if (!this.validateForm()) {
             return;
         }
-        
+
         this.sendMessage();
     }
-    
+
     validateForm() {
         const requiredFields = [
             { id: 'first-name', name: 'First Name' },
@@ -729,15 +785,15 @@ class WhatsAppSender {
             { id: 'email', name: 'Email' },
             { id: 'message', name: 'Message' }
         ];
-        
+
         let isValid = true;
         let errorMessages = [];
-        
+
         // Check required fields
         requiredFields.forEach(field => {
             const element = document.getElementById(field.id);
             const value = element.value.trim();
-            
+
             if (!value) {
                 isValid = false;
                 errorMessages.push(`${field.name} is required`);
@@ -746,7 +802,7 @@ class WhatsAppSender {
                 this.removeHighlight(element);
             }
         });
-        
+
         // Validate email format
         const emailField = document.getElementById('email');
         const email = emailField.value.trim();
@@ -758,30 +814,30 @@ class WhatsAppSender {
                 this.highlightError(emailField);
             }
         }
-        
+
         // Show errors if any
         if (!isValid) {
             this.showError(errorMessages.join('\n'));
         }
-        
+
         return isValid;
     }
-    
+
     highlightError(element) {
         element.classList.add('border-red-500');
         element.classList.remove('border-gray-300');
     }
-    
+
     removeHighlight(element) {
         element.classList.remove('border-red-500');
         element.classList.add('border-gray-300');
     }
-    
+
     showError(message) {
         // You can use a toast notification or modal here
         alert(`Please fix the following errors:\n\n${message}`);
     }
-    
+
     sendMessage() {
         // Get form values
         const formData = {
@@ -791,23 +847,23 @@ class WhatsAppSender {
             subject: document.getElementById('subject').value.trim(),
             message: document.getElementById('message').value.trim()
         };
-        
-        
+
+
         const formattedMessage = this.formatMessage(formData);
         const encodedMessage = encodeURIComponent(formattedMessage);
-        
-       
+
+
         const whatsappUrl = `https://wa.me/${this.schoolNumber}?text=${encodedMessage}`;
-        
-        
+
+
         this.showLoading();
-        
+
         setTimeout(() => {
             window.open(whatsappUrl, '_blank');
             this.showSuccess();
         }, 500);
     }
-    
+
     formatMessage(data) {
         return `
 📧 *NEW CONTACT FORM SUBMISSION*
@@ -822,7 +878,7 @@ ${data.message}
 🌐 *Source:* School Website Contact Form
         `.trim();
     }
-    
+
     showLoading() {
         const submitButton = this.form.querySelector('button[type="submit"]');
         if (submitButton) {
@@ -830,14 +886,14 @@ ${data.message}
             submitButton.disabled = true;
         }
     }
-    
+
     showSuccess() {
         const submitButton = this.form.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.innerHTML = '✓ Message Prepared!';
             submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             submitButton.classList.add('bg-green-600', 'hover:bg-green-700');
-            
+
             // Reset button after 3 seconds
             setTimeout(() => {
                 submitButton.innerHTML = 'Send Message';

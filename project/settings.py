@@ -5,9 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-fr2w-kl7q)=*b-_tso=j2s1^48)=yyg-@n50mu5(n@*ulpk9ek'
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['JosephAbboud.pythonanywhere.com', 'www.JosephAbboud.pythonanywhere.com', 'localhost','127.0.0.1']
+ALLOWED_HOSTS = ['JosephAbboud.pythonanywhere.com', 'www.JosephAbboud.pythonanywhere.com', 'localhost','127.0.0.1','192.168.1.3']
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -112,14 +112,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'home'
 
-secure_proxy_ssl_header = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 3600
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# secure_proxy_ssl_header = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 3600
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 JAZZMIN_SETTINGS = {

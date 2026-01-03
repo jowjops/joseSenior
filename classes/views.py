@@ -120,6 +120,9 @@ def announcements_list(request):
     user = request.user
     has_student_profile = hasattr(user, 'studentprofile_profile')
     
+    #get the class object of the student
+    
+    
     if has_student_profile:
         student_profile = StudentProfile.objects.get(user=user)
         announcements = ClassAnnouncement.objects.select_related('class_related').filter(

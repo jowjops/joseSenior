@@ -36,7 +36,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -90,7 +90,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
-                        <input type="text" name="search" id="search" 
+                        <input type="text" name="search" id="search"
                                value="{{ search_query }}"
                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                placeholder="Search by name, email, or ID...">
@@ -100,7 +100,7 @@
                 <!-- User Type Filter -->
                 <div>
                     <label for="user_type" class="block text-sm font-medium text-gray-700 mb-1">User Type</label>
-                    <select name="user_type" id="user_type" 
+                    <select name="user_type" id="user_type"
                             class="block w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Types</option>
                         <option value="student" {% if selected_user_type == 'student' %}selected{% endif %}>Students</option>
@@ -111,7 +111,7 @@
                 <!-- Status Filter -->
                 <div>
                     <label for="is_active" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="is_active" id="is_active" 
+                    <select name="is_active" id="is_active"
                             class="block w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Status</option>
                         <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
@@ -122,7 +122,7 @@
                 <!-- Sort -->
                 <div>
                     <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-                    <select name="sort" id="sort" 
+                    <select name="sort" id="sort"
                             class="block w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="-date_joined" {% if sort_by == '-date_joined' %}selected{% endif %}>Newest First</option>
                         <option value="date_joined" {% if sort_by == 'date_joined' %}selected{% endif %}>Oldest First</option>
@@ -133,16 +133,29 @@
 
                 <!-- Buttons -->
                 <div class="flex space-x-2">
-                    <button type="submit" 
+                    <button type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
                         <i class="fas fa-filter mr-2"></i>Apply
                     </button>
-                    <a href="{% url 'user_management' %}" 
+                    <a href="{% url 'user_management' %}"
                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
                         <i class="fas fa-redo mr-2"></i>Reset
                     </a>
                 </div>
+
             </form>
+             <div class="flex space-x-2 mt-6">
+                    <a href="{% url 'admin:users_studentprofile_add' %}">
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                        Add Student
+                    </button>
+                    </a>
+                    <a href="{% url 'admin:users_teacherprofile_add' %}"
+                       class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                        Add Teacher
+                    </a>
+                </div>
         </div>
 
         <!-- Users Table -->
@@ -167,7 +180,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for user in users %}
-                        
+
                         <tr class="hover:bg-gray-50 transition">
                             <!-- User Info -->
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -217,7 +230,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <form method="post" action="{% url 'toggle_user_status' user.id %}" class="inline">
                                     {% csrf_token %}
-                                    <button type="submit" 
+                                    <button type="submit"
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition {% if user.is_active %}bg-green-100 text-green-800 hover:bg-green-200{% else %}bg-red-100 text-red-800 hover:bg-red-200{% endif %}">
                                         <span class="w-2 h-2 rounded-full mr-1 {% if user.is_active %}bg-green-400{% else %}bg-red-400{% endif %}"></span>
                                         {{ user.is_active|yesno:"Active,Inactive" }}
@@ -246,12 +259,12 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">
                                     {% if user.studentprofile_profile %}
-                                    <a href="{% url 'admin:users_studentprofile_change' user.studentprofile_profile.id %}" 
+                                    <a href="{% url 'admin:users_studentprofile_change' user.studentprofile_profile.id %}"
                                     class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition">
                                         <i class="fas fa-edit mr-1"></i>Edit Student
                                     </a>
                                 {% elif user.teacherprofile_profile %}
-                                    <a href="{% url 'admin:users_teacherprofile_change' user.teacherprofile_profile.id %}" 
+                                    <a href="{% url 'admin:users_teacherprofile_change' user.teacherprofile_profile.id %}"
                                     class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition">
                                         <i class="fas fa-edit mr-1"></i>Edit Teacher
                                     </a>
@@ -262,7 +275,7 @@
                                 {% endif %}
                                     <a href="{% url 'admin:auth_user_change' user.id %}"  class="inline-flex items-center px-3 py-1.5 border border-blue-300 rounded-md text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 focus:ring-2 focus:ring-blue-500 transition">
                                         <i class="fas fa-cog mr-1"></i>Admin
-                                    </a> 
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -288,7 +301,7 @@
                     </div>
                     <div class="flex space-x-2">
                         {% if users.has_previous %}
-                        <a href="?page={{ users.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_user_type %}&user_type={{ selected_user_type }}{% endif %}{% if selected_status %}&is_active={{ selected_status }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+                        <a href="?page={{ users.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_user_type %}&user_type={{ selected_user_type }}{% endif %}{% if selected_status %}&is_active={{ selected_status }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
                            class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50">
                             Previous
                         </a>
@@ -298,13 +311,13 @@
                             {% if users.number == num %}
                             <span class="px-3 py-1 border border-blue-500 rounded-md text-sm text-white bg-blue-500">{{ num }}</span>
                             {% elif num > users.number|add:'-3' and num < users.number|add:'3' %}
-                            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_user_type %}&user_type={{ selected_user_type }}{% endif %}{% if selected_status %}&is_active={{ selected_status }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+                            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_user_type %}&user_type={{ selected_user_type }}{% endif %}{% if selected_status %}&is_active={{ selected_status }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
                                class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50">{{ num }}</a>
                             {% endif %}
                         {% endfor %}
 
                         {% if users.has_next %}
-                        <a href="?page={{ users.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_user_type %}&user_type={{ selected_user_type }}{% endif %}{% if selected_status %}&is_active={{ selected_status }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+                        <a href="?page={{ users.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_user_type %}&user_type={{ selected_user_type }}{% endif %}{% if selected_status %}&is_active={{ selected_status }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
                            class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50">
                             Next
                         </a>
