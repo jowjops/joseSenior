@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if student_profile %}Student{% elif teacher_profile %}Teacher{% else %}User{% endif %} Profile - {{ user.username }}</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #7209b7;
+            --student-color: #4cc9f0;
+            --teacher-color: #ffb703;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --border-color: #e0e0e0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fb 0%, #e3e8f7 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Header Section */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %}, 
+                {% if student_profile %}var(--primary-color){% elif teacher_profile %}var(--secondary-color){% else %}var(--gray-color){% endif %});
+        }
+
+        .avatar-section {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, 
+                {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %}, 
+                {% if student_profile %}var(--primary-color){% elif teacher_profile %}var(--secondary-color){% else %}var(--dark-color){% endif %});
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            border: 5px solid white;
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: white;
+            color: {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %};
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %};
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header-content h1 {
+            font-size: 32px;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .user-id {
+            font-size: 16px;
+            color: var(--gray-color);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .user-id span {
+            background: {% if student_profile %}rgba(76, 201, 240, 0.1){% elif teacher_profile %}rgba(255, 183, 3, 0.1){% else %}rgba(67, 97, 238, 0.1){% endif %};
+            color: {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %};
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+
+        .meta-item .icon {
+            color: {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %};
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .stat-student .stat-icon {
+            background: var(--student-color);
+        }
+
+        .stat-teacher .stat-icon {
+            background: var(--teacher-color);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card h3 {
+            color: var(--dark-color);
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %};
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--gray-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: var(--dark-color);
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .info-value.badge {
+            background: {% if student_profile %}rgba(76, 201, 240, 0.1){% elif teacher_profile %}rgba(255, 183, 3, 0.1){% else %}rgba(67, 97, 238, 0.1){% endif %};
+            color: {% if student_profile %}var(--student-color){% elif teacher_profile %}var(--teacher-color){% else %}var(--primary-color){% endif %};
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Grades Section (Student Only) */
+        .grades-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+        }
+
+        .grades-section h3 {
+            color: var(--dark-color);
+            font-size: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--student-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .grade-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            transition: all 0.3s ease;
+        }
+
+        .grade-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .grade-label {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grade-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .grade-value.excellent {
+            color: var(--success-color);
+        }
+
+        .grade-value.good {
+            color: var(--primary-color);
+        }
+
+        .grade-value.average {
+            color: var(--warning-color);
+        }
+
+        .grade-value.poor {
+            color: var(--danger-color);
+        }
+
+        /* Attendance Chart (Student Only) */
+        .attendance-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+        }
+
+        .attendance-section h3 {
+            color: var(--dark-color);
+            font-size: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--student-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attendance-chart {
+            height: 100px;
+            background: linear-gradient(90deg, 
+                var(--success-color) 0%, 
+                var(--success-color) {% if student_profile %}{{ student_profile.attendance_rate }}{% else %}100{% endif %}%, 
+                var(--light-color) {% if student_profile %}{{ student_profile.attendance_rate }}{% else %}100{% endif %}%, 
+                var(--light-color) 100%);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .attendance-chart::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: {% if student_profile %}{{ student_profile.attendance_rate }}{% else %}100{% endif %}%;
+            width: 2px;
+            height: 100%;
+            background: var(--dark-color);
+            transform: translateX(-50%);
+        }
+
+        .attendance-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attendance-rate {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .attendance-rate.good {
+            color: var(--success-color);
+        }
+
+        .attendance-rate.average {
+            color: var(--warning-color);
+        }
+
+        .attendance-rate.poor {
+            color: var(--danger-color);
+        }
+
+        .attendance-label {
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+
+        /* Subjects Section (Teacher Only) */
+        .subjects-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+        }
+
+        .subjects-section h3 {
+            color: var(--dark-color);
+            font-size: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--teacher-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .subject-tag {
+            background: rgba(255, 183, 3, 0.1);
+            color: var(--teacher-color);
+            padding: 10px 15px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .subject-tag:hover {
+            background: var(--teacher-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .user-meta {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grades-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 48px;
+            }
+            
+            .header-content h1 {
+                font-size: 24px;
+            }
+            
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Header Section -->
+        <div class="profile-header">
+            <div class="avatar-section">
+                <div class="profile-avatar">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}">
+                    {% else %}
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                    {% endif %}
+                </div>
+                <div class="user-badge">
+                    {% if student_profile %}
+                        STUDENT
+                    {% elif teacher_profile %}
+                        TEACHER
+                    {% else %}
+                        USER
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="header-content">
+                <h1>{{ user.get_full_name|default:user.username }}</h1>
+                
+                <div class="user-id">
+                    <span>
+                        {% if student_profile %}
+                            {{ student_profile.display_id }}
+                        {% elif teacher_profile %}
+                            {{ teacher_profile.display_id }}
+                        {% else %}
+                            User #{{ user.id }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <svg class="icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span>
+                            {% if student_profile %}
+                                Student
+                            {% elif teacher_profile %}
+                                {{ teacher_profile.position }}
+                            {% else %}
+                                User
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="meta-item">
+                        <svg class="icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>
+                            {% if student_profile and student_profile.class_level %}
+                                {{ student_profile.class_level.name }}
+                            {% elif teacher_profile %}
+                                {{ teacher_profile.department }}
+                            {% else %}
+                                School System
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="meta-item">
+                        <svg class="icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        <span>
+                            {% if student_profile %}
+                                Joined {{ student_profile.enrollment_date|date:"M Y" }}
+                            {% elif teacher_profile %}
+                                Hired {{ teacher_profile.hire_date|date:"M Y" }}
+                            {% else %}
+                                Member since {{ user.date_joined|date:"M Y" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            {% if student_profile %}
+                <div class="stat-card stat-student">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ student_profile.attendance_rate }}%</div>
+                        <div class="stat-label">Attendance Rate</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-student">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4"/>
+                            <circle cx="12" cy="12" r="10"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        {% with avg_grade=student_profile.get_average_grade %}
+                        <div class="stat-value">{{ avg_grade|default:"N/A" }}</div>
+                        {% endwith %}
+                        <div class="stat-label">Average Grade</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-student">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ student_profile.absence_value|default:"0" }}</div>
+                        <div class="stat-label">Total Absences</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-student">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ student_profile.expected_graduation_year|default:"N/A" }}</div>
+                        <div class="stat-label">Graduation Year</div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if teacher_profile %}
+                <div class="stat-card stat-teacher">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                            <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            <path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ teacher_profile.years_of_experience }}</div>
+                        <div class="stat-label">Years of Experience</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-teacher">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ teacher_profile.max_classes }}</div>
+                        <div class="stat-label">Max Classes</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-teacher">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">
+                            {% if teacher_profile.salary %}
+                                ${{ teacher_profile.salary|floatformat:2 }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                        <div class="stat-label">Salary</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-teacher">
+                    <div class="stat-icon">
+                        <svg style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ teacher_profile.employee_type|title }}</div>
+                        <div class="stat-label">Employment Type</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Personal Information -->
+            <div class="info-card">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+                    </svg>
+                    Personal Information
+                </h3>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <span class="info-label">Username</span>
+                        <span class="info-value">{{ user.username }}</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ user.email }}</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value">{{ user.get_full_name|default:"Not set" }}</span>
+                    </li>
+                    {% if student_profile %}
+                        <li class="info-item">
+                            <span class="info-label">Student ID</span>
+                            <span class="info-value badge">{{ student_profile.display_id }}</span>
+                        </li>
+                    {% endif %}
+                    {% if teacher_profile %}
+                        <li class="info-item">
+                            <span class="info-label">Employee ID</span>
+                            <span class="info-value badge">{{ teacher_profile.display_id }}</span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Academic/Professional Information -->
+            <div class="info-card">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                    {% if student_profile %}
+                        Academic Information
+                    {% elif teacher_profile %}
+                        Professional Information
+                    {% else %}
+                        Account Information
+                    {% endif %}
+                </h3>
+                <ul class="info-list">
+                    {% if student_profile %}
+                        <li class="info-item">
+                            <span class="info-label">Class</span>
+                            <span class="info-value">
+                                {% if student_profile.class_level %}
+                                    {{ student_profile.class_level.name }}
+                                {% else %}
+                                    Not assigned
+                                {% endif %}
+                            </span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Enrollment Date</span>
+                            <span class="info-value">{{ student_profile.enrollment_date|date:"F d, Y" }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Graduation Year</span>
+                            <span class="info-value">{{ student_profile.expected_graduation_year|default:"Not set" }}</span>
+                        </li>
+                    {% endif %}
+                    
+                    {% if teacher_profile %}
+                        <li class="info-item">
+                            <span class="info-label">Department</span>
+                            <span class="info-value badge">{{ teacher_profile.get_department_display }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Hire Date</span>
+                            <span class="info-value">{{ teacher_profile.hire_date|date:"F d, Y" }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Employment Type</span>
+                            <span class="info-value">{{ teacher_profile.get_employee_type_display }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Homeroom Teacher</span>
+                            <span class="info-value badge">
+                                {% if teacher_profile.is_homeroom_teacher %}Yes{% else %}No{% endif %}
+                            </span>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="info-item">
+                        <span class="info-label">Account Created</span>
+                        <span class="info-value">{{ user.date_joined|date:"F d, Y" }}</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">Last Login</span>
+                        <span class="info-value">{{ user.last_login|date:"F d, Y"|default:"Never" }}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="info-card">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                    </svg>
+                    Contact Information
+                </h3>
+                <ul class="info-list">
+                    {% if student_profile %}
+                        <li class="info-item">
+                            <span class="info-label">Parent Name</span>
+                            <span class="info-value">{{ student_profile.parent_name|default:"Not set" }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Parent Email</span>
+                            <span class="info-value">{{ student_profile.parent_email|default:"Not set" }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Parent Phone</span>
+                            <span class="info-value">{{ student_profile.parent_phone|default:"Not set" }}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Parent Occupation</span>
+                            <span class="info-value">{{ student_profile.parent_occupation|default:"Not set" }}</span>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="info-item">
+                        <span class="info-label">Emergency Contact</span>
+                        <span class="info-value">
+                            {% if student_profile %}
+                                {{ student_profile.emergency_contact_name|default:"Not set" }}
+                            {% elif teacher_profile %}
+                                {{ teacher_profile.emergency_contact_name|default:"Not set" }}
+                            {% else %}
+                                Not set
+                            {% endif %}
+                        </span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">Emergency Phone</span>
+                        <span class="info-value">
+                            {% if student_profile %}
+                                {{ student_profile.emergency_contact_phone|default:"Not set" }}
+                            {% elif teacher_profile %}
+                                {{ teacher_profile.emergency_contact_phone|default:"Not set" }}
+                            {% else %}
+                                Not set
+                            {% endif %}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Student Specific Sections -->
+        {% if student_profile %}
+            <!-- Grades Section -->
+            <div class="grades-section">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        <path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+                    </svg>
+                    Academic Grades
+                </h3>
+                <div class="grades-grid">
+                    <div class="grade-card">
+                        <div class="grade-label">Carnet 1</div>
+                        <div class="grade-value {% if student_profile.carnet_1 >= 16 %}excellent{% elif student_profile.carnet_1 >= 12 %}good{% elif student_profile.carnet_1 >= 10 %}average{% else %}poor{% endif %}">
+                            {{ student_profile.carnet_1|default:"N/A" }}
+                        </div>
+                        <div class="grade-label">
+                            {% if student_profile.carnet_1 %}
+                                /20
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="grade-card">
+                        <div class="grade-label">Carnet 2</div>
+                        <div class="grade-value {% if student_profile.carnet_2 >= 16 %}excellent{% elif student_profile.carnet_2 >= 12 %}good{% elif student_profile.carnet_2 >= 10 %}average{% else %}poor{% endif %}">
+                            {{ student_profile.carnet_2|default:"N/A" }}
+                        </div>
+                        <div class="grade-label">
+                            {% if student_profile.carnet_2 %}
+                                /20
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="grade-card">
+                        <div class="grade-label">Carnet 3</div>
+                        <div class="grade-value {% if student_profile.carnet_3 >= 16 %}excellent{% elif student_profile.carnet_3 >= 12 %}good{% elif student_profile.carnet_3 >= 10 %}average{% else %}poor{% endif %}">
+                            {{ student_profile.carnet_3|default:"N/A" }}
+                        </div>
+                        <div class="grade-label">
+                            {% if student_profile.carnet_3 %}
+                                /20
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="grade-card">
+                        <div class="grade-label">Average</div>
+                        {% with avg=student_profile.get_average_grade %}
+                        <div class="grade-value {% if avg >= 16 %}excellent{% elif avg >= 12 %}good{% elif avg >= 10 %}average{% else %}poor{% endif %}">
+                            {{ avg|default:"N/A" }}
+                        </div>
+                        <div class="grade-label">
+                            {% if avg %}
+                                /20
+                            {% endif %}
+                        </div>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Section -->
+            <div class="attendance-section">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    Attendance
+                </h3>
+                <div class="attendance-chart"></div>
+                <div class="attendance-info">
+                    <div>
+                        <div class="attendance-rate {% if student_profile.attendance_rate >= 90 %}good{% elif student_profile.attendance_rate >= 75 %}average{% else %}poor{% endif %}">
+                            {{ student_profile.attendance_rate }}%
+                        </div>
+                        <div class="attendance-label">Attendance Rate</div>
+                    </div>
+                    <div>
+                        <div class="attendance-rate">{{ student_profile.absence_value|default:"0" }}</div>
+                        <div class="attendance-label">Total Absences</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Information -->
+            {% if student_profile.medical_conditions or student_profile.allergies or student_profile.medication %}
+            <div class="info-card">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    Medical Information
+                </h3>
+                <ul class="info-list">
+                    {% if student_profile.medical_conditions %}
+                    <li class="info-item">
+                        <span class="info-label">Medical Conditions</span>
+                        <span class="info-value">{{ student_profile.medical_conditions }}</span>
+                    </li>
+                    {% endif %}
+                    
+                    {% if student_profile.allergies %}
+                    <li class="info-item">
+                        <span class="info-label">Allergies</span>
+                        <span class="info-value">{{ student_profile.allergies }}</span>
+                    </li>
+                    {% endif %}
+                    
+                    {% if student_profile.medication %}
+                    <li class="info-item">
+                        <span class="info-label">Medications</span>
+                        <span class="info-value">{{ student_profile.medication }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Teacher Specific Sections -->
+        {% if teacher_profile %}
+            <!-- Subjects Section -->
+            {% if teacher_profile.subjects_taught %}
+            <div class="subjects-section">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    Subjects Taught
+                </h3>
+                <div class="subjects-grid">
+                    {% for subject in teacher_profile.subject_list %}
+                    <div class="subject-tag">{{ subject }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Qualifications -->
+            {% if teacher_profile.qualifications or teacher_profile.specialization %}
+            <div class="info-card">
+                <h3>
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Qualifications
+                </h3>
+                <ul class="info-list">
+                    {% if teacher_profile.qualifications %}
+                    <li class="info-item">
+                        <span class="info-label">Qualifications</span>
+                        <span class="info-value">{{ teacher_profile.qualifications }}</span>
+                    </li>
+                    {% endif %}
+                    
+                    {% if teacher_profile.specialization %}
+                    <li class="info-item">
+                        <span class="info-label">Specialization</span>
+                        <span class="info-value">{{ teacher_profile.specialization }}</span>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="info-item">
+                        <span class="info-label">Years of Experience</span>
+                        <span class="info-value badge">{{ teacher_profile.years_of_experience }} years</span>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            {% comment %} {% if request.user.is_superuser or request.user == user %}
+            <a href="{% url 'admin:users_studentprofile_change' user.id %}" class="btn btn-primary">
+                <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Edit Profile
+            </a>
+            {% endif %} {% endcomment %}
+            
+            <a href="{% url 'home' %}" class="btn btn-outline">
+                <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add color coding for grades based on value
+            document.querySelectorAll('.grade-value').forEach(element => {
+                const grade = parseFloat(element.textContent);
+                if (!isNaN(grade)) {
+                    if (grade >= 16) {
+                        element.classList.add('excellent');
+                    } else if (grade >= 12) {
+                        element.classList.add('good');
+                    } else if (grade >= 10) {
+                        element.classList.add('average');
+                    } else {
+                        element.classList.add('poor');
+                    }
+                }
+            });
+
+            // Add animation to stat cards on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Animate stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease';
+                observer.observe(card);
+            });
+
+            // Add hover effect to info cards
+            document.querySelectorAll('.info-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = 'var(--shadow-lg)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = 'var(--shadow-md)';
+                });
+            });
+
+            // Print functionality
+            const printBtn = document.createElement('button');
+            printBtn.className = 'btn btn-outline';
+            printBtn.innerHTML = `
+                <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                    <path d="M6 14h12v8H6z"/>
+                </svg>
+                Print Profile
+            `;
+            printBtn.style.marginLeft = 'auto';
+            printBtn.style.marginRight = 'auto';
+            printBtn.style.marginTop = '20px';
+            printBtn.style.display = 'block';
+            printBtn.onclick = () => window.print();
+            
+            document.querySelector('.action-buttons').parentElement.appendChild(printBtn);
+        });
+    </script>
+</body>
+</html>

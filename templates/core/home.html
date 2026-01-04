@@ -183,7 +183,10 @@
         {% comment %} <a href="{% url 'home' %}#Success_Stories" class="text-gray-600 hover:text-blue-600 transition">Success Stories</a> {% endcomment %}
         <a href="{% url 'home' %}#Latest_News" class="text-gray-600 hover:text-blue-600 transition">Latest News</a>
         <a href="{% url 'home' %}#Location_contact_section" class="text-gray-600 hover:text-blue-600 transition">Location & Contact</a>
-
+        {% if user.is_authenticated %}
+        <a href="{% url 'the_user_profile' user.id %}" class="text-gray-600 hover:text-blue-600 transition">My Profile</a>
+        {% endif %}
+        
       </div>
 
       <!-- Mobile Hamburger -->

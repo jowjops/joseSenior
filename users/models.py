@@ -90,6 +90,10 @@ class StudentProfile(BaseProfile):
     emergency_contact_phone = models.CharField(max_length=20, verbose_name="Emergency Contact Phone",null=True, blank=True)
     
     attendance_rate = models.DecimalField(max_digits=5, decimal_places=2, default=100.00, verbose_name="Attendance Rate %")
+
+    carnet_1 = models.FloatField(blank=True, null=True, verbose_name="Carnet 1 Grade")
+    carnet_2 = models.FloatField(blank=True, null=True, verbose_name="Carnet 2 Grade")
+    carnet_3 = models.FloatField(blank=True, null=True, verbose_name="Carnet 3 Grade")
     
     class Meta:
         verbose_name = "Student Profile"

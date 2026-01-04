@@ -16,4 +16,6 @@ urlpatterns = [
 
     path('management/', views.user_management, name='user_management'),
     path('toggle-status/<int:user_id>/', views.toggle_user_status, name='toggle_user_status'),
+
+    path('profile/<int:user_id>/', views.view_profile, name='the_user_profile'),
 ]

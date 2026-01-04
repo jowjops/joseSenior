@@ -16,7 +16,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 # from .models import CustomUser
 from django.contrib.auth.models import User
-
+from .models import StudentProfile, TeacherProfile
 
 
 
@@ -126,4 +126,25 @@ def toggle_user_status(request, user_id):
     messages.success(request, f"User {user.username} has been {action}.")
     
     return redirect('user_management')
+
+
+def view_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    student_profile = StudentProfile.objects.filter(user__id=user_id).first()
+    teacher_profile = TeacherProfile.objects.filter(user__id=user_id).first()
+    context = {
+            'user': user,
+        }
+
+    if student_profile:
+        context = {
+            'user': user,
+            'student_profile': student_profile,
+        }
+    if teacher_profile:
+        context = {
+            'user': user,
+            'teacher_profile': teacher_profile,
+        }
+    return render(request, 'users/view_profile.html', context)
 
